@@ -1,6 +1,5 @@
 from django.db import models
 from django.urls import reverse
-from djmoney.models.fields import MoneyField
 
 
 class Category(models.Model):
@@ -57,11 +56,10 @@ class Product(models.Model):
         verbose_name='Описание',
         blank=True,
     )
-    price = MoneyField(
+    price = models.DecimalField(
         verbose_name='Цена',
         max_digits=10,
         decimal_places=2,
-        default_currency='RUB'
     )
     available = models.BooleanField(
         verbose_name='Доступность товара',
