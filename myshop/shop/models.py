@@ -1,27 +1,31 @@
 from django.db import models
 from django.urls import reverse
 
+from parler.models import TranslatableModel, TranslatedFields
 
-class Category(models.Model):
-    name = models.CharField(
-        verbose_name='Название',
-        max_length=200,
-    )
-    slug = models.SlugField(
-        verbose_name='Идентификатор',
-        max_length=200,
-        unique=True
+
+class Category(TranslatableModel):
+    translations = TranslatedFields(
+        name=models.CharField(
+            verbose_name='Название',
+            max_length=200,
+        ),
+        slug=models.SlugField(
+            verbose_name='Идентификатор',
+            max_length=200,
+            unique=True
+        )
     )
 
     class Meta:
-        ordering = ('name',)
-        indexes = [
-            models.Index(
-                fields=['name']
-            ),
-        ]
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
+        # ordering = ('name',)
+        # indexes = [
+        #     models.Index(
+        #         fields=['name']
+        #     ),
+        # ]
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
 
     def __str__(self):
         return str(self.name)
@@ -32,32 +36,35 @@ class Category(models.Model):
             args=[self.slug])
 
 
-class Product(models.Model):
+class Product(TranslatableModel):
+    translations = TranslatedFields(
+        name=models.CharField(
+            max_length=200,
+            verbose_name='Наименование продукта',
+        ),
+        slug=models.SlugField(
+            verbose_name='Идентификатор',
+            max_length=200,
+        ),
+        description=models.TextField(
+            verbose_name='Описание',
+            blank=True,
+        )
+        )
     category = models.ForeignKey(
         Category,
         related_name='products',
         on_delete=models.CASCADE,
         verbose_name='Категории продуктов',
     )
-    name = models.CharField(
-        max_length=200,
-        verbose_name='Наименование продукта',
-    )
-    slug = models.SlugField(
-        verbose_name='Идентификатор',
-        max_length=200,
-    )
     image = models.ImageField(
         verbose_name='Изображение',
         upload_to='products/%Y/%m/%d',
         blank=True
     )
-    description = models.TextField(
-        verbose_name='Описание',
-        blank=True,
-    )
     price = models.DecimalField(
         verbose_name='Цена',
+        null=True,
         max_digits=10,
         decimal_places=2,
     )
@@ -75,14 +82,14 @@ class Product(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
+        # ordering = ('name',)
         indexes = [
-            models.Index(fields=['id', 'slug']),
-            models.Index(fields=['name']),
+            # models.Index(fields=['id', 'slug']),
+            # models.Index(fields=['name']),
             models.Index(fields=['-created'])
         ]
-        verbose_name = 'Товар'
-        verbose_name_plural = 'Товары'
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
 
     def __str__(self):
         return str(self.name)
